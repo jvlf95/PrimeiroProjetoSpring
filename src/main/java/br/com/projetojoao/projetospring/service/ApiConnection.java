@@ -1,4 +1,4 @@
-package br.com.projetojoao.projetospring.Service;
+package br.com.projetojoao.projetospring.service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,7 +8,7 @@ import java.net.http.HttpResponse;
 
 public class ApiConnection {
 
-    public String getData(String serieName){
+    public String getData(String url){
 
         // create a new HttpClient
         HttpClient client = HttpClient.newHttpClient();
@@ -16,7 +16,7 @@ public class ApiConnection {
         // create a new HttpRequest and a uri that the client will send
         // a request
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://www.omdbapi.com/?t="+ serieName.replace(" ", "+") + "&apikey=b423b0ca"))
+                .uri(URI.create(url))
                 .build();
         HttpResponse<String> response = null;
 

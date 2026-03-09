@@ -1,4 +1,4 @@
-package br.com.projetojoao.projetospring.Model;
+package br.com.projetojoao.projetospring.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record DataSerie(@JsonAlias("Title")String title,
                         @JsonAlias("imdbRating") Double rating,
-                        @JsonAlias("totalSeasons")String totalSeasons) {
+                        @JsonAlias("totalSeasons")Integer totalSeasons) {
 
-    public void getDataSerie(){
+    public void getSerieInfo(){
         System.out.println("Title: " + this.title +
                 "\nTotal Seasons: " + this.totalSeasons +
                 "\nRating: " + this.rating);

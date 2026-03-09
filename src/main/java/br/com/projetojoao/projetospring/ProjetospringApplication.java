@@ -1,8 +1,10 @@
 package br.com.projetojoao.projetospring;
 
-import br.com.projetojoao.projetospring.Model.DataSerie;
-import br.com.projetojoao.projetospring.Service.ApiConnection;
-import br.com.projetojoao.projetospring.Service.DataConvert;
+import br.com.projetojoao.projetospring.main.Main;
+import br.com.projetojoao.projetospring.model.DataSeason;
+import br.com.projetojoao.projetospring.model.DataSerie;
+import br.com.projetojoao.projetospring.service.ApiConnection;
+import br.com.projetojoao.projetospring.service.DataConvert;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,25 +19,9 @@ public class ProjetospringApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("First SpringBoot application!");
+		Main main = new Main();
 
-		Scanner read = new Scanner(System.in);
-
-		ApiConnection apiConnection = new ApiConnection();
-
-		System.out.println("Write a serie name and to getting your info");
-		System.out.print("Name: ");
-		String serieName = read.nextLine();
-
-		String json = apiConnection.getData(serieName);
-
-		System.out.println(json);
-
-		DataConvert convert = new DataConvert();
-		DataSerie dataSerie = convert.getData(json, DataSerie.class);
-
-		dataSerie.getDataSerie();
-
+		main.menu();
 
 
 	}

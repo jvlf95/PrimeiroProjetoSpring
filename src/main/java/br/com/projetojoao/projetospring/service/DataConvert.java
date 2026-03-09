@@ -1,4 +1,4 @@
-package br.com.projetojoao.projetospring.Service;
+package br.com.projetojoao.projetospring.service;
 
 import tools.jackson.databind.ObjectMapper;
 
