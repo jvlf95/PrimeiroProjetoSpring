@@ -10,11 +10,15 @@ import java.util.List;
 public record DataSeason(@JsonAlias("Season")Integer seasonNumber,
                          @JsonAlias("Episodes")List<DataEpisode> eps) {
 
-
+    /*
     public void getSeasonInfo(){
+        System.out.println("-----------------------------------------");
         System.out.println("\nSeason: " + this.seasonNumber);
         for(DataEpisode episode : eps){
             episode.getEpisodeInfo();
         }
+        System.out.println("-----------------------------------------");
     }
+
+     */
 }
