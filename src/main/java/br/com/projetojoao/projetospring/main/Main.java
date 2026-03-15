@@ -3,12 +3,12 @@ package br.com.projetojoao.projetospring.main;
 import br.com.projetojoao.projetospring.model.DataEpisode;
 import br.com.projetojoao.projetospring.model.DataSeason;
 import br.com.projetojoao.projetospring.model.DataSerie;
+import br.com.projetojoao.projetospring.model.Episode;
 import br.com.projetojoao.projetospring.service.ApiConnection;
 import br.com.projetojoao.projetospring.service.DataConvert;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     private Scanner read = new Scanner(System.in);
@@ -20,6 +20,7 @@ public class Main {
     public void menu(){
         System.out.print("Write the serie's name to getting info: ");
         String serieName = read.nextLine();
+
         String json = apiConnection.getData(URL + serieName.replace(" ", "+") + APIKEY);
 
         DataSerie dataSerie = convert.getData(json, DataSerie.class);
@@ -35,19 +36,30 @@ public class Main {
             seasons.add(dataSeason);
         }
 
-        seasons.forEach(System.out::println);
+        seasons.forEach(s -> System.out.println("Season: " + s.seasonNumber()));
 
-        /*
-        for(int i = 0; i < dataSerie.totalSeasons(); i++){
-            List<DataEpisode> episodes = seasons.get(i).eps();
-            for(int j = 0; j < episodes.size(); j++){
-                System.out.println(episodes.get(j).title());
-            }
-        }
 
-         */
+        List<DataEpisode> episodes =
+                seasons.stream()
+                        .flatMap(s -> s.eps().stream())
+                        .toList();
 
-        seasons.forEach(s -> s.eps().forEach(e -> System.out.println(e.title())));
+        episodes.stream()
+                .filter(e -> !e.rating().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DataEpisode::rating).reversed())
+                .limit(5)
+                .forEach(e -> System.out.println(
+                        "\nEpisode: " + e.title() +
+                        "\nRating: " + e.rating()
+                ));
+
+
+        List<Episode> episodeos = seasons.stream()
+                .flatMap(s -> s.eps().stream()
+                        .map(d -> new Episode(s.seasonNumber(), d)))
+                .collect(Collectors.toList());
+
+        episodeos.forEach(System.out::println);
 
     }
 }
