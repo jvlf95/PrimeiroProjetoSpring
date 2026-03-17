@@ -18,7 +18,7 @@ public class Episode {
             this.released = LocalDate.parse(dataEpisode.released());
         }
         catch(DateTimeParseException e){
-            System.out.println(e.getMessage());
+            this.released = null;
         }
 
         try{
