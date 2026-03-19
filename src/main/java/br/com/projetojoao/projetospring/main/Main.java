@@ -110,5 +110,14 @@ public class Main {
 
         System.out.println(ratingSeason);
 
+        DoubleSummaryStatistics stat = episodeos.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.summarizingDouble(Episode::getRating));
+
+        System.out.println("\nAverage: " + stat.getAverage() +
+                "\nBest Episode: " + stat.getMax() +
+                "\nWorst Episode: " + stat.getMin() +
+                "\nNumber of Episodes: " + stat.getCount());
+
     }
 }
