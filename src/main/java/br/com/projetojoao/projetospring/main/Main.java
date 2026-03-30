@@ -2,13 +2,13 @@ package br.com.projetojoao.projetospring.main;
 
 import br.com.projetojoao.projetospring.model.DataSeason;
 import br.com.projetojoao.projetospring.model.DataSerie;
+import br.com.projetojoao.projetospring.model.Serie;
 import br.com.projetojoao.projetospring.service.ApiConnection;
 import br.com.projetojoao.projetospring.service.DataConvert;
-import ch.qos.logback.core.encoder.JsonEscapeUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -18,7 +18,7 @@ public class Main {
     private DataConvert dataConvert = new DataConvert();
     private static final String URL = "https://www.omdbapi.com/?t=";
     private static final String APIKEY = "&apikey=b423b0ca";
-    private List<DataSerie> series = new ArrayList<>();
+    private List<DataSerie> dataSeries = new ArrayList<>();
 
     public void menu(){
 
@@ -47,9 +47,9 @@ public class Main {
                 case 3:
                     listSearchedSeries();
                     break;
-                case 4:
-                    separateCategory();
-                    break;
+                //case 4:
+                    //separateCategory();
+                    //break;
                 case 0:
                     System.out.println("Leaving...");
                     break;
@@ -65,7 +65,7 @@ public class Main {
 
     private void showWebSerie(){
         DataSerie dataSerie = getDataSerie();
-        series.add(dataSerie);
+        dataSeries.add(dataSerie);
         System.out.println(dataSerie);
     }
     private DataSerie getDataSerie(){
@@ -92,14 +92,14 @@ public class Main {
     }
 
     private void listSearchedSeries(){
-        series.forEach(System.out::println);
+        List<Serie> series = dataSeries.stream()
+                .map(d -> new Serie(d))
+                .collect(Collectors.toList());
+
+        series.stream()
+                .sorted(Comparator.comparing(Serie::getGenre))
+                .forEach(System.out::println);
     }
 
-    private void separateCategory(){
-        Map<String, List<DataSerie>> serieCategory = series.stream()
-                .collect(Collectors.groupingBy(DataSerie::genre));
-
-        System.out.println(serieCategory);
-    }
 
 }
