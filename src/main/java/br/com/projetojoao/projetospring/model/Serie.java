@@ -1,11 +1,21 @@
 package br.com.projetojoao.projetospring.model;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
+
 import java.util.OptionalDouble;
 
+@Entity
+@Table(name = "serie")
 public class Serie {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto incremental
+    private Long id;
+    @Column(unique = true)
     private String title;
     private Double rating;
     private Integer totalSeasons;
+    @Enumerated(EnumType.STRING)
     private Category genre;
     private String plot;
     private String actors;
@@ -19,6 +29,14 @@ public class Serie {
         this.genre = Category.fromString(dataSerie.genre().split(",")[0].trim());
         this.plot = dataSerie.plot();
         this.actors = dataSerie.actors();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
