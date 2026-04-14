@@ -3,8 +3,10 @@ package br.com.projetojoao.projetospring.main;
 import br.com.projetojoao.projetospring.model.DataSeason;
 import br.com.projetojoao.projetospring.model.DataSerie;
 import br.com.projetojoao.projetospring.model.Serie;
+import br.com.projetojoao.projetospring.repository.SerieRepository;
 import br.com.projetojoao.projetospring.service.ApiConnection;
 import br.com.projetojoao.projetospring.service.DataConvert;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +21,11 @@ public class Main {
     private static final String URL = "https://www.omdbapi.com/?t=";
     private static final String APIKEY = "&apikey=b423b0ca";
     private List<DataSerie> dataSeries = new ArrayList<>();
+    private SerieRepository serieRepository;
+
+    public Main(SerieRepository serieRepository){
+        this.serieRepository = serieRepository;
+    }
 
     public void menu(){
 
@@ -30,7 +37,6 @@ public class Main {
                 1 - Find series
                 2 - Find episodes
                 3 - List searched series
-                4 - Series by category
                 0 - Exit
                 """);
             System.out.print("Option: ");
@@ -47,9 +53,6 @@ public class Main {
                 case 3:
                     listSearchedSeries();
                     break;
-                //case 4:
-                    //separateCategory();
-                    //break;
                 case 0:
                     System.out.println("Leaving...");
                     break;
@@ -65,8 +68,9 @@ public class Main {
 
     private void showWebSerie(){
         DataSerie dataSerie = getDataSerie();
-        dataSeries.add(dataSerie);
-        System.out.println(dataSerie);
+        Serie serie = new Serie(dataSerie);
+        serieRepository.save(serie);
+        System.out.println("Data saved!");
     }
     private DataSerie getDataSerie(){
         System.out.print("Write a serie name and get the info: ");
@@ -92,9 +96,7 @@ public class Main {
     }
 
     private void listSearchedSeries(){
-        List<Serie> series = dataSeries.stream()
-                .map(d -> new Serie(d))
-                .collect(Collectors.toList());
+        List<Serie> series = serieRepository.findAll(); // find and return all data from database
 
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenre))

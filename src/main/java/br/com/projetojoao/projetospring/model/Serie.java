@@ -3,6 +3,8 @@ package br.com.projetojoao.projetospring.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
 @Entity
@@ -19,6 +21,11 @@ public class Serie {
     private Category genre;
     private String plot;
     private String actors;
+    @Transient
+    private List<Episode> episodes = new ArrayList<>();
+
+    // default constructor, JPA needs that exist this constructor
+    public Serie(){}
 
     public Serie(DataSerie dataSerie){
         this.title = dataSerie.title();
