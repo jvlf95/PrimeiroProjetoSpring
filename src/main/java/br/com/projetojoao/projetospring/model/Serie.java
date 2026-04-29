@@ -21,7 +21,8 @@ public class Serie {
     private Category genre;
     private String plot;
     private String actors;
-    @Transient
+
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episode> episodes = new ArrayList<>();
 
     // default constructor, JPA needs that exist this constructor
@@ -36,6 +37,23 @@ public class Serie {
         this.genre = Category.fromString(dataSerie.genre().split(",")[0].trim());
         this.plot = dataSerie.plot();
         this.actors = dataSerie.actors();
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public void setTotalSeasons(Integer totalSeasons) {
+        this.totalSeasons = totalSeasons;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        episodes.forEach(e -> e.setSerie(this));
+        this.episodes = episodes;
     }
 
     public Long getId() {
@@ -101,6 +119,7 @@ public class Serie {
                 "\nRating: " + getRating() +
                 "\nGenre: " + getGenre() +
                 "\nActors: " + getActors() +
-                "\nPlot: " + getPlot();
+                "\nPlot: " + getPlot() +
+                "\nEpisodes: " + getEpisodes();
     }
 }

@@ -2,16 +2,14 @@ package br.com.projetojoao.projetospring.main;
 
 import br.com.projetojoao.projetospring.model.DataSeason;
 import br.com.projetojoao.projetospring.model.DataSerie;
+import br.com.projetojoao.projetospring.model.Episode;
 import br.com.projetojoao.projetospring.model.Serie;
 import br.com.projetojoao.projetospring.repository.SerieRepository;
 import br.com.projetojoao.projetospring.service.ApiConnection;
 import br.com.projetojoao.projetospring.service.DataConvert;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -21,6 +19,7 @@ public class Main {
     private static final String URL = "https://www.omdbapi.com/?t=";
     private static final String APIKEY = "&apikey=b423b0ca";
     private List<DataSerie> dataSeries = new ArrayList<>();
+    private List<Serie> series = new ArrayList<>();
     private SerieRepository serieRepository;
 
     public Main(SerieRepository serieRepository){
@@ -82,22 +81,46 @@ public class Main {
     }
 
     private void findEpisodesSerie(){
-        DataSerie dataSerie = getDataSerie();
-        List<DataSeason> seasons = new ArrayList<>();
+        System.out.println("All series: ");
+        listSearchedSeries();
+        System.out.println("Choose a serie by its name");
+        System.out.print("Name: ");
+        String name = read.nextLine();
 
-        for(int i = 1; i <= dataSerie.totalSeasons(); i++){
-            String json = apiConnection.getData(URL + dataSerie.title().replace(" ", "+") + "&Season=" + i + APIKEY);
-            DataSeason dataSeason = dataConvert.getData(json, DataSeason.class);
-            seasons.add(dataSeason);
+        Optional<Serie> serie = series.stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(name.toLowerCase()))
+                .findFirst();
+
+        if(serie.isPresent()){
+            var serieFounded = serie.get();
+
+            List<DataSeason> seasons = new ArrayList<>();
+
+            for(int i = 1; i <= serieFounded.getTotalSeasons(); i++){
+                String json = apiConnection.getData(URL + serieFounded.getTitle().replace(" ", "+") + "&Season=" + i + APIKEY);
+                DataSeason dataSeason = dataConvert.getData(json, DataSeason.class);
+                seasons.add(dataSeason);
+            }
+
+            seasons.forEach(System.out::println);
+
+            List<Episode> episodes = seasons.stream()
+                    .flatMap(d -> d.eps().stream()
+                            .map(e -> new Episode(d.seasonNumber(), e)))
+                    .collect(Collectors.toList());
+
+            serieFounded.setEpisodes(episodes);
+            serieRepository.save(serieFounded);
+        }else{
+            System.out.println("Serie not found!");
         }
 
-        seasons.forEach(System.out::println);
+
 
     }
 
     private void listSearchedSeries(){
-        List<Serie> series = serieRepository.findAll(); // find and return all data from database
-
+        series = serieRepository.findAll(); // find and return all data from database
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenre))
                 .forEach(System.out::println);

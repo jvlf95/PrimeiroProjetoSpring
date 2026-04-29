@@ -1,14 +1,25 @@
 package br.com.projetojoao.projetospring.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+@Entity
+@Table(name = "episodes")
 public class Episode {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private int seasonNumber;
     private String title;
     private LocalDate released;
     private double rating;
     private int number;
+    @ManyToOne
+    private Serie serie;
+
+    public Episode(){}
 
     public Episode(int seasonNumber, DataEpisode dataEpisode){
         this.seasonNumber = seasonNumber;
@@ -31,6 +42,22 @@ public class Episode {
         this.number = dataEpisode.epNumber();
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
 
     public int getSeasonNumber() {
         return seasonNumber;

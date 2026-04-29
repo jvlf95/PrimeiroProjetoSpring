@@ -13,6 +13,8 @@ public class ProjetospringApplication implements CommandLineRunner {
 	@Autowired
 	private SerieRepository serieRepository;
 
+
+
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetospringApplication.class, args);
 	}
