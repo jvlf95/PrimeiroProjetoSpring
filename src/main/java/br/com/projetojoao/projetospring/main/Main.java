@@ -2,6 +2,7 @@ package br.com.projetojoao.projetospring.main;
 
 import br.com.projetojoao.projetospring.model.DataSerie;
 import br.com.projetojoao.projetospring.model.Serie;
+import br.com.projetojoao.projetospring.repository.SerieRepository;
 import br.com.projetojoao.projetospring.service.ApiConnection;
 import br.com.projetojoao.projetospring.service.DataConvert;
 
@@ -18,7 +19,11 @@ public class Main {
     private static final String URL = "https://www.omdbapi.com/?t=";
     private static final String APIKEY = "&apikey=b423b0ca";
     private List<DataSerie> dataSeries = new ArrayList<>();
+    private SerieRepository serieRepository;
 
+    public Main(SerieRepository serieRepository){
+        this.serieRepository = serieRepository;
+    }
 
     public void menu(){
 
@@ -56,12 +61,12 @@ public class Main {
             }
         }
 
-
     }
 
     private void showWebSerie(){
         DataSerie dataSerie = getDataSerie();
-        dataSeries.add(dataSerie);
+        Serie serie = new Serie(dataSerie);
+        serieRepository.save(serie);
         System.out.println("Data saved!");
     }
     private DataSerie getDataSerie(){

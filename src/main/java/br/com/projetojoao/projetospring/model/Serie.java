@@ -3,6 +3,9 @@ package br.com.projetojoao.projetospring.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "series")
 public class Serie {
@@ -17,6 +20,9 @@ public class Serie {
     private Category genre;
     private String actors;
     private String plot;
+
+    @Transient
+    private List<Episode> episodeList = new ArrayList<>();
 
     public Serie(DataSerie dataSerie){
         this.title = dataSerie.title();
