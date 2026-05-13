@@ -1,60 +1,45 @@
 package br.com.projetojoao.projetospring.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.OptionalDouble;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "serie")
+@Table(name = "series")
 public class Serie {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto incremental
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String title;
-    private Double rating;
     private Integer totalSeasons;
+    private Double rating;
     @Enumerated(EnumType.STRING)
     private Category genre;
-    private String plot;
     private String actors;
-
-    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Episode> episodes = new ArrayList<>();
-
-    // default constructor, JPA needs that exist this constructor
-    public Serie(){}
+    private String plot;
 
     public Serie(DataSerie dataSerie){
         this.title = dataSerie.title();
-        // do the same thing of try / catch
-        this.rating = OptionalDouble.of(Double.valueOf(dataSerie.rating())).orElse(0.0);
         this.totalSeasons = dataSerie.totalSeasons();
-        // method split() -> we pass a separator and select the index of the String we need
+
+        // try to obtain the double value
+        try{
+            this.rating = Double.valueOf(dataSerie.rating());
+        }catch(NumberFormatException e){
+            this.rating = 0.0;
+        }
+
+        // another way to make the conversion
+        // Using OptionalDouble Class
+        // this.rating = OptionalDobule.of(Double.valueOf(dataSerie.rating())).orElse(0)
+
         this.genre = Category.fromString(dataSerie.genre().split(",")[0].trim());
-        this.plot = dataSerie.plot();
         this.actors = dataSerie.actors();
+        this.plot = dataSerie.plot();
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
+    // getters and setter
 
-    public void setTotalSeasons(Integer totalSeasons) {
-        this.totalSeasons = totalSeasons;
-    }
-
-    public List<Episode> getEpisodes() {
-        return episodes;
-    }
-
-    public void setEpisodes(List<Episode> episodes) {
-        episodes.forEach(e -> e.setSerie(this));
-        this.episodes = episodes;
-    }
 
     public Long getId() {
         return id;
@@ -72,20 +57,20 @@ public class Serie {
         this.title = title;
     }
 
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public int getTotalSeasons() {
+    public Integer getTotalSeasons() {
         return totalSeasons;
     }
 
-    public void setTotalSeasons(int totalSeasons) {
+    public void setTotalSeasons(Integer totalSeasons) {
         this.totalSeasons = totalSeasons;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public Category getGenre() {
@@ -96,14 +81,6 @@ public class Serie {
         this.genre = genre;
     }
 
-    public String getPlot() {
-        return plot;
-    }
-
-    public void setPlot(String plot) {
-        this.plot = plot;
-    }
-
     public String getActors() {
         return actors;
     }
@@ -112,14 +89,21 @@ public class Serie {
         this.actors = actors;
     }
 
+    public String getPlot() {
+        return plot;
+    }
+
+    public void setPlot(String plot) {
+        this.plot = plot;
+    }
+
     @Override
     public String toString(){
-        return "\nTitle: " + getTitle() +
-                "\nTotal Seasons: " + getTotalSeasons() +
-                "\nRating: " + getRating() +
-                "\nGenre: " + getGenre() +
-                "\nActors: " + getActors() +
-                "\nPlot: " + getPlot() +
-                "\nEpisodes: " + getEpisodes();
+        return "\nGenre: " + genre +
+                "\nTitle: " + title +
+                "\nTotal Seasons: " + totalSeasons +
+                "\nRating: " + rating +
+                "\nActors: " + actors +
+                "\nPlot: " + plot;
     }
 }
