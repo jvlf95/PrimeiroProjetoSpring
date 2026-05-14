@@ -83,11 +83,11 @@ public class Main {
     }
 
     private void listSearchedSeries() {
-        List<Serie> series = dataSeries.stream()
-                .map(Serie::new)
-                .collect(Collectors.toList());
+        // get all data from Serie in database
+        List<Serie> serieList = serieRepository.findAll();
 
-        series.stream()
+        // sorted the serieList by genre
+        serieList.stream()
                 .sorted(Comparator.comparing(Serie::getGenre))
                 .forEach(System.out::println);
     }
